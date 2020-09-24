@@ -8,12 +8,12 @@ import {
   TextInput,
   TouchableHighlight,
 } from 'react-native';
-// import ImagePicker from 'react-native-image-crop-picker';
-// import ProgressCircle from 'react-native-progress/Circle';
-// import TesseractOcr, {
-//   LANG_CHINESE_SIMPLIFIED,
-//   useEventListener,
-// } from 'react-native-tesseract-ocr';
+import ImagePicker from 'react-native-image-crop-picker';
+import ProgressCircle from 'react-native-progress/Circle';
+import TesseractOcr, {
+  LANG_CHINESE_SIMPLIFIED,
+  useEventListener,
+} from 'react-native-tesseract-ocr';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -96,7 +96,7 @@ function SignInScreen() {
       <TouchableHighlight
         // onPress={() => signIn({username, password})}
         onPress={()=>{
-          
+          signIn({type: 'SIGN_IN', token: 'dummy-auth-token'});
         }}
         activeOpacity={0.85}>
         <View style={styles.loginBtn}>
@@ -108,96 +108,96 @@ function SignInScreen() {
 } 
 
 function HomeScreen() {
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [progress, setProgress] = useState(0);
-  // const [imgSrc, setImgSrc] = useState(null);
-  // const [text, setText] = useState('');
-  // useEventListener('onProgressChange', (p) => {
-  //   setProgress(p.percent / 100);
-  // });
+  const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [imgSrc, setImgSrc] = useState(null);
+  const [text, setText] = useState('');
+  useEventListener('onProgressChange', (p) => {
+    setProgress(p.percent / 100);
+  });
 
-  // const recognizeTextFromImage = async (path) => {
-  //   setIsLoading(true);
-  //   console.log({path});
-  //   try {
-  //     const tesseractOptions = {};
-  //     const recognizedText = await TesseractOcr.recognize(
-  //       path,
-  //       LANG_CHINESE_SIMPLIFIED,
-  //       tesseractOptions,
-  //     );
-  //     setText(recognizedText);
-  //   } catch (err) {
-  //     console.error(err);
-  //     setText('');
-  //   }
+  const recognizeTextFromImage = async (path) => {
+    setIsLoading(true);
+    console.log({path});
+    try {
+      const tesseractOptions = {};
+      const recognizedText = await TesseractOcr.recognize(
+        path,
+        LANG_CHINESE_SIMPLIFIED,
+        tesseractOptions,
+      );
+      setText(recognizedText);
+    } catch (err) {
+      console.error(err);
+      setText('');
+    }
 
-  //   setIsLoading(false);
-  //   setProgress(0);
-  // };
+    setIsLoading(false);
+    setProgress(0);
+  };
 
-  // const recognizeFromPicker = async (options = defaultPickerOptions) => {
-  //   try {
-  //     const image = await ImagePicker.openPicker(options);
-  //     setImgSrc({uri: image.path});
-  //     await recognizeTextFromImage(image.path);
-  //   } catch (err) {
-  //     if (err.message !== 'User cancelled image selection') {
-  //       console.error(err);
-  //     }
-  //   }
-  // };
+  const recognizeFromPicker = async (options = defaultPickerOptions) => {
+    try {
+      const image = await ImagePicker.openPicker(options);
+      setImgSrc({uri: image.path});
+      await recognizeTextFromImage(image.path);
+    } catch (err) {
+      if (err.message !== 'User cancelled image selection') {
+        console.error(err);
+      }
+    }
+  };
 
-  // const recognizeFromCamera = async (options = defaultPickerOptions) => {
-  //   try {
-  //     const image = await ImagePicker.openCamera(options);
-  //     setImgSrc({uri: image.path});
-  //     await recognizeTextFromImage(image.path);
-  //   } catch (err) {
-  //     if (err.message !== 'User cancelled image selection') {
-  //       console.error(err);
-  //     }
-  //   }
-  // };
+  const recognizeFromCamera = async (options = defaultPickerOptions) => {
+    try {
+      const image = await ImagePicker.openCamera(options);
+      setImgSrc({uri: image.path});
+      await recognizeTextFromImage(image.path);
+    } catch (err) {
+      if (err.message !== 'User cancelled image selection') {
+        console.error(err);
+      }
+    }
+  };
 
-  // return (
-  //   <View style={styles.container}>
-  //     <Text style={styles.title}>Tesseract OCR example</Text>
-  //     <Text style={styles.instructions}>Select an image source:</Text>
-  //     <View style={styles.options}>
-  //       <View style={styles.button}>
-  //         <Button
-  //           disabled={isLoading}
-  //           title="Camera"
-  //           onPress={() => {
-  //             recognizeFromCamera();
-  //           }}
-  //         />
-  //       </View>
-  //       <View style={styles.button}>
-  //         <Button
-  //           disabled={isLoading}
-  //           title="Picker"
-  //           onPress={() => {
-  //             recognizeFromPicker();
-  //           }}
-  //         />
-  //       </View>
-  //     </View>
-  //     {imgSrc && (
-  //       <View style={styles.imageContainer}>
-  //         <Image style={styles.image} source={imgSrc} />
-  //         {isLoading ? (
-  //           <ProgressCircle showsText progress={progress} />
-  //         ) : (
-  //           <Text>{text}</Text>
-  //         )}
-  //       </View>
-  //     )}
-  //   </View>
-  // );
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Tesseract OCR example</Text>
+      <Text style={styles.instructions}>Select an image source:</Text>
+      <View style={styles.options}>
+        <View style={styles.button}>
+          <Button
+            disabled={isLoading}
+            title="Camera"
+            onPress={() => {
+              recognizeFromCamera();
+            }}
+          />
+        </View>
+        <View style={styles.button}>
+          <Button
+            disabled={isLoading}
+            title="Picker"
+            onPress={() => {
+              recognizeFromPicker();
+            }}
+          />
+        </View>
+      </View>
+      {imgSrc && (
+        <View style={styles.imageContainer}>
+          <Image style={styles.image} source={imgSrc} />
+          {isLoading ? (
+            <ProgressCircle showsText progress={progress} />
+          ) : (
+            <Text>{text}</Text>
+          )}
+        </View>
+      )}
+    </View>
+  );
 
-  return(<></>)
+  // return(<></>)
 }
 
 function App({navigation}) {
